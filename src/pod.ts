@@ -23,6 +23,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
   public readonly hostNetwork?: boolean;
   public readonly terminationGracePeriod?: Duration;
   public readonly enableServiceLinks?: boolean;
+  public readonly priorityClassName?: string;
 
   protected readonly isolate: boolean;
 
@@ -47,6 +48,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
     this.hostNetwork = props.hostNetwork ?? false;
     this.terminationGracePeriod = props.terminationGracePeriod ?? Duration.seconds(30);
     this.enableServiceLinks = props.enableServiceLinks;
+    this.priorityClassName = props.priorityClassName;
 
     if (props.containers) {
       props.containers.forEach(c => this.addContainer(c));
@@ -257,6 +259,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
       hostNetwork: this.hostNetwork,
       terminationGracePeriodSeconds: this.terminationGracePeriod?.toSeconds(),
       enableServiceLinks: this.enableServiceLinks,
+      priorityClassName: this.priorityClassName,
     };
 
   }
@@ -481,6 +484,13 @@ export interface AbstractPodProps extends base.ResourceProps {
    * @see https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#accessing-the-service
    */
   readonly enableServiceLinks?: boolean;
+
+  /**
+   * Defines which PriorityClass should be used for scheduling this pod and optionally preempting other
+   * lower priority pods.
+   * @see https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
+   */
+  readonly priorityClassName?: string;
 }
 
 /**
