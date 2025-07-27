@@ -24,6 +24,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
   public readonly terminationGracePeriod?: Duration;
   public readonly enableServiceLinks?: boolean;
   public readonly priorityClassName?: string;
+  public readonly runtimeClassName?: string;
 
   protected readonly isolate: boolean;
 
@@ -49,6 +50,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
     this.terminationGracePeriod = props.terminationGracePeriod ?? Duration.seconds(30);
     this.enableServiceLinks = props.enableServiceLinks;
     this.priorityClassName = props.priorityClassName;
+    this.runtimeClassName = props.runtimeClassName;
 
     if (props.containers) {
       props.containers.forEach(c => this.addContainer(c));
@@ -260,6 +262,7 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
       terminationGracePeriodSeconds: this.terminationGracePeriod?.toSeconds(),
       enableServiceLinks: this.enableServiceLinks,
       priorityClassName: this.priorityClassName,
+      runtimeClassName: this.runtimeClassName
     };
 
   }
@@ -491,6 +494,12 @@ export interface AbstractPodProps extends base.ResourceProps {
    * @see https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/
    */
   readonly priorityClassName?: string;
+
+  /**
+   * Defines which container runtime will be used to schedule the pod.
+   * @see https://kubernetes.io/docs/concepts/containers/runtime-class/
+   */
+  readonly runtimeClassName?: string;
 }
 
 /**
