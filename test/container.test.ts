@@ -615,6 +615,9 @@ describe('Container', () => {
           request: Size.mebibytes(1024),
           limit: Size.mebibytes(2048),
         },
+        nvidiaGpu: {
+          limit: 1,
+        },
       },
       image: 'image',
     });
@@ -624,11 +627,13 @@ describe('Container', () => {
         'cpu': k8s.Quantity.fromString('0.5'),
         'memory': k8s.Quantity.fromString('384Mi'),
         'ephemeral-storage': k8s.Quantity.fromString('2Gi'),
+        'nvidia.com/gpu': k8s.Quantity.fromNumber(1),
       },
       requests: {
         'cpu': k8s.Quantity.fromString('300m'),
         'memory': k8s.Quantity.fromString('256Mi'),
         'ephemeral-storage': k8s.Quantity.fromString('1Gi'),
+        'nvidia.com/gpu': k8s.Quantity.fromNumber(1),
       },
     });
 

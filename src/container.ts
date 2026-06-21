@@ -1146,6 +1146,7 @@ export class Container {
     const memoryRequest = this.resources?.memory?.request;
     const ephemeralStorageLimit = this.resources?.ephemeralStorage?.limit;
     const ephemeralStorageRequest = this.resources?.ephemeralStorage?.request;
+    const nvidiaGpuLimit = this.resources?.nvidiaGpu?.limit;
 
     const limits: { [key: string]: k8s.Quantity } = {};
     const requests: { [key: string]: k8s.Quantity } = {};
@@ -1167,6 +1168,10 @@ export class Container {
     }
     if (ephemeralStorageRequest) {
       requests['ephemeral-storage'] = k8s.Quantity.fromString(ephemeralStorageRequest.toGibibytes().toString() + 'Gi');
+    }
+    if (nvidiaGpuLimit) {
+      requests['nvidia.com/gpu'] = k8s.Quantity.fromNumber(nvidiaGpuLimit);
+      limits['nvidia.com/gpu'] = k8s.Quantity.fromNumber(nvidiaGpuLimit);
     }
 
     let resourceRequirements: k8s.ResourceRequirements | undefined = undefined;
@@ -1320,6 +1325,7 @@ export interface ContainerResources {
   readonly cpu?: CpuResources;
   readonly memory?: MemoryResources;
   readonly ephemeralStorage?: EphemeralStorageResources;
+  readonly nvidiaGpu?: NvidiaResources;
 }
 
 /**
@@ -1361,6 +1367,13 @@ export interface MemoryResources {
 export interface EphemeralStorageResources {
   readonly request?: Size;
   readonly limit?: Size;
+}
+
+/**
+ * NVIDIA GPU compute resources
+ */
+export interface NvidiaResources {
+  readonly limit?: number;
 }
 
 /**
