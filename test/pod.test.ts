@@ -1616,3 +1616,48 @@ test('enableServiceLinks can be disabled', () => {
   expect(spec.enableServiceLinks).toBeFalsy();
 });
 
+test('Pod supports priorityClassName', () => {
+  const chart = Testing.chart();
+
+  new kplus.Pod(chart, 'Pod', {
+    containers: [{ image: 'nginx' }],
+    priorityClassName: 'high-priority',
+  });
+
+  const elem = Testing.synth(chart)[0];
+  expect(elem.spec.priorityClassName).toEqual('high-priority');
+});
+
+test('Pod uses default value for priorityClassName', () => {
+  const chart = Testing.chart();
+
+  new kplus.Pod(chart, 'Pod', {
+    containers: [{ image: 'nginx' }],
+  });
+
+  const elem = Testing.synth(chart)[0];
+  expect(elem.spec.priorityClassName).toBeUndefined();
+});
+
+test('Deployment supports priorityClassName', () => {
+  const chart = Testing.chart();
+
+  new kplus.Deployment(chart, 'Deployment', {
+    containers: [{ image: 'nginx' }],
+    priorityClassName: 'medium-priority',
+  });
+
+  const elem = Testing.synth(chart)[0];
+  expect(elem.spec.template.spec.priorityClassName).toEqual('medium-priority');
+});
+
+test('Deployment uses default value for priorityClassName', () => {
+  const chart = Testing.chart();
+
+  new kplus.Deployment(chart, 'Deployment', {
+    containers: [{ image: 'nginx' }],
+  });
+
+  const elem = Testing.synth(chart)[0];
+  expect(elem.spec.template.spec.priorityClassName).toBeUndefined();
+});
