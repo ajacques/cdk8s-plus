@@ -23,6 +23,9 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
   public readonly hostNetwork?: boolean;
   public readonly terminationGracePeriod?: Duration;
   public readonly enableServiceLinks?: boolean;
+  public readonly hostUsers?: boolean;
+  public readonly runtimeClassName?: string;
+  public readonly priorityClassName?: string;
 
   protected readonly isolate: boolean;
 
@@ -47,6 +50,9 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
     this.hostNetwork = props.hostNetwork ?? false;
     this.terminationGracePeriod = props.terminationGracePeriod ?? Duration.seconds(30);
     this.enableServiceLinks = props.enableServiceLinks;
+    this.hostUsers = props.hostUsers;
+    this.runtimeClassName = props.runtimeClassName;
+    this.priorityClassName = props.priorityClassName;
 
     if (props.containers) {
       props.containers.forEach(c => this.addContainer(c));
@@ -257,6 +263,9 @@ export abstract class AbstractPod extends base.Resource implements IPodSelector,
       hostNetwork: this.hostNetwork,
       terminationGracePeriodSeconds: this.terminationGracePeriod?.toSeconds(),
       enableServiceLinks: this.enableServiceLinks,
+      hostUsers: this.hostUsers,
+      runtimeClassName: this.runtimeClassName,
+      priorityClassName: this.priorityClassName,
     };
 
   }
@@ -481,6 +490,33 @@ export interface AbstractPodProps extends base.ResourceProps {
    * @see https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#accessing-the-service
    */
   readonly enableServiceLinks?: boolean;
+
+  /**
+   * Run the pod with host users.
+   *
+   * @default undefined
+   * @see https://kubernetes.io/docs/concepts/security/pod-security-standards/
+   */
+  readonly hostUsers?: boolean;
+
+  /**
+   * Runtime class specifies which container runtime to use for running containers in this pod.
+   * RuntimeClass is used to determine which container runtime is used to run all containers in a pod.
+   *
+   * @default undefined
+   * @see https://kubernetes.io/docs/concepts/containers/runtime-class/
+   */
+  readonly runtimeClassName?: string;
+
+  /**
+   * The priority class name the pod should have.
+   * The priority name refers to a predefined PriorityClass that holds arbitrary priority value.
+   * The higher the value, the higher the priority.
+   *
+   * @default undefined
+   * @see https://kubernetes.io/docs/concepts/configuration/pod-priority/
+   */
+  readonly priorityClassName?: string;
 }
 
 /**
